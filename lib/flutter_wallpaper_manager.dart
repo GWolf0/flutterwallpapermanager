@@ -17,9 +17,9 @@ class WallpaperManager {
   }
 
   static Future<bool> setWallpaperFromFile(
-      String filePath, int wallpaperLocation) async {
+      String filePath, int wallpaperLocation,int width,int height) async {
     final int result = await _channel.invokeMethod('setWallpaperFromFile',
-        {'filePath': filePath, 'wallpaperLocation': wallpaperLocation});
+        {'filePath': filePath, 'wallpaperLocation': wallpaperLocation,'width':width,'height':height});
     return result > 0 ? true : false;
   }
 

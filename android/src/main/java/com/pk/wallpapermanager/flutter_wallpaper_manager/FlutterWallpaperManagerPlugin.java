@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.WallpaperManager;
 
 import android.content.Context;
@@ -92,20 +91,20 @@ public class FlutterWallpaperManagerPlugin implements FlutterPlugin, MethodCallH
   // }
 
   @SuppressLint("MissingPermission")
-  private int setWallpaperFromFile(String filePath, int wallpaperLocation) {
+  private int setWallpaperFromFile(String filePath, int wallpaperLocation,int width,int height) {
     int result = -1;
     Bitmap bitmap = BitmapFactory.decodeFile(filePath);
     WallpaperManager wm = WallpaperManager.getInstance(context);
-    DisplayMetrics displayMetrics = new DisplayMetrics();
-    ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
-    int height = displayMetrics.heightPixels;
-    int width = displayMetrics.widthPixels;
-    Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+    Bitmap croppedBitmap=Bitmap.createScaledBitmap(bitmap,width,height,true);
+    // DisplayMetrics displayMetrics = new DisplayMetrics();
+    // ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+    // int height = displayMetrics.heightPixels;
+    // int width = displayMetrics.widthPixels;
     try {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            result = wm.setBitmap(scaledBitmap, null, false, wallpaperLocation);
+            result = wm.setBitmap(croppedBitmap, null, true, wallpaperLocation);
         } else {
-            wm.setBitmap(scaledBitmap);
+            wm.setBitmap(croppedBitmap);
             result = 1;
         }
     } catch (IOException e) {
