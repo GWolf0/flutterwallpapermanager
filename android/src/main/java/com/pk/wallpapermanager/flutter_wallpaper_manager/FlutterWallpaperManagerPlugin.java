@@ -20,6 +20,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Array;
 
+import android.util.DisplayMetrics;
+
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -70,22 +72,45 @@ public class FlutterWallpaperManagerPlugin implements FlutterPlugin, MethodCallH
     channel.setMethodCallHandler(null);
   }
 
+  // @SuppressLint("MissingPermission")
+  // private int setWallpaperFromFile(String filePath, int wallpaperLocation) {
+  //     int result = -1;
+  //     Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+  //     WallpaperManager wm = WallpaperManager.getInstance(context);
+  //     try {
+  //         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+  //             result = wm.setBitmap(bitmap, null, false, wallpaperLocation);
+  //         } else {
+  //             wm.setBitmap(bitmap);
+  //             result = 1;
+  //         }
+  //     } catch (IOException e) {
+  //         e.printStackTrace();
+  //     }
+  //     return result;
+  // }
+
   @SuppressLint("MissingPermission")
   private int setWallpaperFromFile(String filePath, int wallpaperLocation) {
-      int result = -1;
-      Bitmap bitmap = BitmapFactory.decodeFile(filePath);
-      WallpaperManager wm = WallpaperManager.getInstance(context);
-      try {
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-              result = wm.setBitmap(bitmap, null, false, wallpaperLocation);
-          } else {
-              wm.setBitmap(bitmap);
-              result = 1;
-          }
-      } catch (IOException e) {
-          e.printStackTrace();
-      }
-      return result;
+    int result = -1;
+    Bitmap bitmap = BitmapFactory.decodeFile(filePath);
+    WallpaperManager wm = WallpaperManager.getInstance(context);
+    DisplayMetrics displayMetrics = new DisplayMetrics();
+    ((Activity)context).getWindowManager().getDefaultDisplay().getMetrics(displayMetrics);
+    int height = displayMetrics.heightPixels;
+    int width = displayMetrics.widthPixels;
+    Bitmap scaledBitmap = Bitmap.createScaledBitmap(bitmap, width, height, true);
+    try {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            result = wm.setBitmap(scaledBitmap, null, false, wallpaperLocation);
+        } else {
+            wm.setBitmap(scaledBitmap);
+            result = 1;
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    return result;
   }
 
   @SuppressLint("MissingPermission")
