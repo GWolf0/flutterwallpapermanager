@@ -5,6 +5,7 @@ import androidx.annotation.NonNull;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.WallpaperManager;
 
 import android.content.Context;
